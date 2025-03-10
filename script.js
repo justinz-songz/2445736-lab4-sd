@@ -15,23 +15,18 @@ document.getElementById("countryForm").addEventListener("submit", async function
             <p><strong>Region:</strong> ${region}</p>
             <p><strong>Flag:</strong> <img src="${flag}" alt="Flag of ${countryInfo.name.common}"></p>
         `;
-
-
-
-
         
-        // Display bordering countries
-        const borders = result[0].borders;
-        // console.log(borders)
-        console.log(result)
-        // for(let i=0;i<borders.length;i++){
-        //      const res=fetch("https://restcountries.com/v3.1/name/" + borders[i]);
-        //      borders.push(countryInfo.flags.png)
-        
-
-        // }
-        if (borders) {
-            document.getElementById("borderConts").innerHTML = borders.join(", ");
+        // Display bordering countries flags
+        const borders = countryInfo.borders;
+        if (borders && borders.length > 0) {
+            const borderFlags = [];
+            for (let i = 0; i < borders.length; i++) {
+                const res = await fetch("https://restcountries.com/v3.1/alpha/" + borders[i]);
+                const borderCountry = await res.json();
+                const flagForCountry = borderCountry[0].flags.png;
+                borderFlags.push(`<img src="${flagForCountry}" alt="Flag of ${borderCountry[0].name.common}" style="width: 50px; height: 30px; margin: 5px;">`);
+            }
+            document.getElementById("borderConts").innerHTML = borderFlags.join(" ");
         } else {
             document.getElementById("borderConts").innerHTML = "No bordering countries";
         }
